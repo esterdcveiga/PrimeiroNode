@@ -1,5 +1,5 @@
 # PrimeiroNode
-Projeto criado na aula sobre APIs com Node.s
+Projeto criado na aula sobre APIs com Node.js
 
 ## Passos para criação e execução do projeto:
 ### 1- Instalar o Express
