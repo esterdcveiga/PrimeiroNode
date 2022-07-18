@@ -2,12 +2,12 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT
 
-app.use(express.urlencoded({extended: false}))
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
 var produtos = []
 
-app.get('/produtos', (req, res) =>{
+app.get('/produtos', (req, res) => {
     res.send({
         message: 'endpoint de produtos',
         produtos: produtos
@@ -16,13 +16,13 @@ app.get('/produtos', (req, res) =>{
 app.get('/produtos/:idproduto', (req, res) => {
     var idp = req.params.idproduto
     res.send({
-        message:'endpoint de produto por id',
+        message: 'endpoint de produto por id',
         produto: produtos[idp]
 
     })
 })
 app.post('/produtos', (req, res) => {
-    var produto ={
+    var produto = {
         id: produtos.length,
         descricao: req.body.descricao,
         preco: req.body.preco
@@ -38,7 +38,7 @@ app.put('/produtos/:idproduto', (req, res) => {
     var produto = {
         id: idp,
         descricao: req.body.descricao,
-        preco:req.body.preco
+        preco: req.body.preco
     }
     produtos[idp] = produto
     res.send({
@@ -49,16 +49,27 @@ app.put('/produtos/:idproduto', (req, res) => {
 
 app.delete('/produtos/:idproduto', (req, res) => {
     var idp = req.params.idproduto
-    var produto = {
-        id: idp,
-        descricao: req.body.descricao,
-        preco:req.body.preco
+    var existe = false
+    var i = 0
+    while (existe == false && i < produtos.length) {
+        let produto = produtos[i]
+        if (produto.id == idp) {
+            existe == true
+        }
+        i++
     }
-    produtos.splice(produto, idp)
-    res.send({
-        message: 'produto removido',
-        produtos: produtos
-    })
+    if (existe) {
+        produtos.splice(idp, 1)
+        res.send({
+            message: 'produto removido',
+            produtos: produtos
+        })
+    }else{
+        res.send({
+            message: 'produto não encontrado'
+        })
+    }
+
 })
 
-app.listen(port, () => {console.log(`executando em http://localhost:${port}`)})
+app.listen(port, () => { console.log(`executando em http://localhost:${port}`) })
