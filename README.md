@@ -27,7 +27,7 @@ Nesse arquivo é criada a variável de ambiente contendo a porta utilizada na ap
 }
 ~~~~
 ### 5- Definir a porta no arquivo index.js
-Para isso será usada a variável de ambiente criada no arquivo nodemon.js
+Para isso será usada a variável de ambiente criada no arquivo nodemon.json
 ~~~javascript
 const port = process.env.PORT
 ~~~
