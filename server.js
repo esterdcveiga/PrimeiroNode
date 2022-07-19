@@ -34,7 +34,7 @@ app.get('/produtos', (req, res) => {
         }
         client.query('select * from produto', (error, result) => {
             if (error) {
-                res.send({
+                return res.send({
                     message: 'Erro ao consultar dados',
                     error: error.message
                 })
@@ -53,7 +53,7 @@ app.get('/produtos/:idproduto', (req, res) => {
         }
         client.query('select * from produto where id = $1', [req.params.idproduto], (error, result) => {
             if (error) {
-                res.send({
+                return res.send({
                     message: 'Erro ao consultar dados',
                     error: error.message
                 })
@@ -74,12 +74,12 @@ app.post('/produtos', (req, res) => {
         var dados = [req.body.descricao, req.body.preco]
         client.query(sql, dados, (error, result) => {
             if (error) {
-                res.send({
+                return res.send({
                     message: 'Erro ao inserir dados',
                     error: error.message
                 })
             }
-            return res.status(201).send(result.rows[0])
+            return res.status(201).send({message:'Produto inserido com sucesso'})
         })
     })
 })
@@ -100,7 +100,7 @@ app.put('/produtos/:idproduto', (req, res) => {
                     error: error.message
                 })
             }
-            return res.status(200).send({message:'atualizado com sucesso'})
+            return res.status(200).send({ message: 'atualizado com sucesso' })
         })
     })
 })
@@ -112,8 +112,6 @@ app.delete('/produtos/:idproduto', (req, res) => {
                 message: 'Erro ao conectaro no database'
             })
         }
-        //var sql = 'update produto set descricao = $1, preco = $2 where id = $3'
-        //var dados = [req.body.descricao, req.body.preco, req.params.idproduto]
         client.query('delete from produto where id = $1', [req.params.idproduto], (error, result) => {
             if (error) {
                 res.send({
@@ -121,7 +119,7 @@ app.delete('/produtos/:idproduto', (req, res) => {
                     error: error.message
                 })
             }
-            return res.status(200).send({message:'removido com sucesso'})
+            return res.status(204).send({ message: 'removido com sucesso' })
         })
     })
 
