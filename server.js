@@ -6,7 +6,10 @@ const port = process.env.PORT
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
+//string de conexão, está armazenando o endereço do banco de dados
 const conStr = process.env.DATABASE_URL
+
+// connection pool é um objeto que irá gerenciar as conexões, para abrir, fechar e reutilizar conforme possível. Este único pool ficará guardado em uma variável global, que é testada logo no início da execução para garantir que se já houver um pool, que ele será utilizado.
 //pool de conexão utilizando a string de conexão
 const pool = new pg.Pool({ connectionString: conStr })
 
