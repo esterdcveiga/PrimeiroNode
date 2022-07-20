@@ -29,19 +29,25 @@ app.get('/conexao', (req, res) => {
 })
 
 app.get('/produtos', (req, res) => {
+    //abrindo a conexão
     pool.connect((err, client) => {
+        //verificando se há erro na conexão e retornando o erro caso haja
         if (err) {
             return res.status(401).send({
                 message: 'erro ao conectaro no database'
             })
         }
+        //não havendo erro na conexão o código sql é enviado
         client.query('select * from produto', (error, result) => {
+            //verificando se houve erro no sql enviado
             if (error) {
+                //caso haja erro retorna-o
                 return res.send({
                     message: 'Erro ao consultar dados',
                     error: error.message
                 })
             }
+            //caso não haja erro retorna os dados recuperados
             return res.status(200).send(result.rows)
         })
     })
@@ -54,6 +60,7 @@ app.get('/produtos/:idproduto', (req, res) => {
                 message: 'erro ao conectaro no database'
             })
         }
+        //passando os dados para o código sql 
         client.query('select * from produto where id = $1', [req.params.idproduto], (error, result) => {
             if (error) {
                 return res.send({
