@@ -3,11 +3,12 @@ const app = express()
 const pg = require('pg')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const cors = require('cors')
 const port = process.env.PORT
 
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
-
+app.use(cors())
 const conStr = process.env.DATABASE_URL
 const pool = new pg.Pool({ connectionString: conStr })
 
@@ -18,23 +19,33 @@ app.post('/usuarios', (req, res) => {
                 message: 'erro ao conectar no database'
             })
         }
-        bcrypt.hash(req.body.senha, 10, (error, hash) => {
-            if (error) {
-                return res.status(500).send({ message: 'erro de autenticação' })
-            }
-            var sql = 'insert into usuario(nome, email, senha, perfil) values($1, $2, $3, $4)'
-            var dados = [req.body.nome, req.body.email, hash, req.body.perfil]
-            client.query(sql, dados, (error, result) => {
-                if (error) {
-                    return res.status(500).send({
-                        message: 'erro ao inserir'
+        var sql1 = 'select * from usuario where email = $1'
+        var dados1 = [req.body.email]
+        client.query(sql1, dados1, (error, result) => {
+            if (result.rowCount > 0) {
+                return res.status(201).send({ message: 'já existe um usuário cadastrado com esse email' })
+            } else{
+                bcrypt.hash(req.body.senha, 10, (error, hash) => {
+                    if (error) {
+                        return res.status(500).send({ message: 'erro de autenticação' })
+                    }
+                    var sql = 'insert into usuario(nome, email, senha, perfil) values($1, $2, $3, $4)'
+                    var dados = [req.body.nome, req.body.email, hash, req.body.perfil]
+                    client.query(sql, dados, (error, result) => {
+                        if (error) {
+                            return res.status(500).send({
+                                message: 'erro ao inserir'
+                            })
+                        }
                     })
-                }
-            })
-            return res.status(201).send({
-                message: 'cadastrado'
-            })
+                    return res.status(201).send({
+                        message: 'cadastrado'
+                    })
+                })
+            }
         })
+
+        
     })
 })
 
@@ -46,7 +57,7 @@ app.post('/usuarios/login', (req, res) => {
             })
         }
         var sql = 'select * from usuario where email = $1'
-        dados = [req.body.email]
+        var dados = [req.body.email]
         client.query(sql, dados, (error, result) => {
             if (error) {
                 return res.status(500).send({ message: 'erro ao selecionar usuário' })
