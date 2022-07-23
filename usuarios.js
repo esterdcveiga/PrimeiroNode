@@ -10,13 +10,14 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(cors())
 const conStr = process.env.DATABASE_URL
-const pool = new pg.Pool({ connectionString: conStr })
+const pool = new pg.Pool({ connectionString: conStr, ssl: {rejectUnauthorized: false} })
 
 app.post('/usuarios', (req, res) => {
     pool.connect((err, client) => {
         if (err) {
             return res.status(401).send({
-                message: 'erro ao conectar no database'
+                message: 'erro ao conectar no database',
+                err: err.message
             })
         }
         var sql1 = 'select * from usuario where email = $1'

@@ -1,6 +1,6 @@
 {
     "env":{
         "PORT": 8080,
-        "DATABASE_URL": "postgres://postgres:123456@localhost/postgres"
+        "DATABASE_URL": "postgres://fevhfgyapzkyoi:604d5bc70bdb745b91778b6c52f79ce1235d09d9ecd8c320c992825ef77a444e@ec2-44-206-214-233.compute-1.amazonaws.com:5432/dafr39unvsmu4l"
     }
 }
