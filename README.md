@@ -53,3 +53,35 @@ nodemon <nome_do_arquivo.js>
 ~~~
 npx nodemon <nome_do_arquivo.js>
 ~~~
+
+## Passos para conexão com o banco de dados
+Utilizando o banco de dados PostgreSQL
+### 1- Instalar o driver de conexão
+É necessário para intermediar a conexão com o banco de dados, e é instalado com os segintes comandos no terminal
+~~~~
+npm install pg
+~~~~
+### 2- Criar uma variável de ambiente para armazenar a string de conexão com o banco de dados
+No arquivo nodemon.json, onde foi criada anteriormente a variável de ambiente para a porta, agora ficará assim:
+~~~~json 
+{
+    "env":{
+        "PORT": 8080,
+        "DATABASE_URL": "postgres://<nome_usuario>:<senha>@localhost/<nome_do_database>"
+    }
+}
+~~~~
+**observação:** passar as informações do seu banco na string de conexão inserindo seu usuário no lugar de <nome_usuario>, sua senha no lugar de <senha> e o nome do seu database no lugar de <nome_do_database>
+### 3- Fazer a requisição do driver de conexão no arquivo .js onde será necessário se conectar com o banco
+~~~~javascript
+    const pg = require('pg')
+~~~~
+### 4- Armazenar variável de ambiente que armazena o a string de conexão para uma constante no arquivo .js onde o banco de dados será usado
+~~~~javascript
+const conStr = process.env.DATABASE_URL
+~~~~
+### 5- Criar um pool de conexão
+connection pool é um objeto que irá gerenciar as conexões, para abrir, fechar e reutilizar conforme possível. Este único pool ficará guardado em uma variável global, que é testada logo no início da execução para garantir que se já houver um pool, que ele será utilizado.
+~~~~javascript
+const pool = new pg.Pool({ connectionString: conStr })
+~~~~
